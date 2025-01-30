@@ -1,5 +1,5 @@
 import "@walletconnect/react-native-compat";
-import { mainnet, polygon, arbitrum } from "@wagmi/core/chains";
+import { mainnet, polygon } from "@wagmi/core/chains";
 import { defaultWagmiConfig } from "@reown/appkit-wagmi-react-native";
 import { REOWN_ID } from "@env";
 
@@ -18,6 +18,6 @@ const metadata = {
   },
 };
 
-const chains = [mainnet, polygon, arbitrum] as const;
+const chains = [mainnet, polygon] as const;
 
 export const wagmiConfig = defaultWagmiConfig({ chains, projectId, metadata });
