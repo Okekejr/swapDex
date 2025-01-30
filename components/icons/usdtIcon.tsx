@@ -4,14 +4,11 @@ import { Image, ImageStyle } from "expo-image";
 import { blurhash } from "@/constants/random";
 import { StylingIcon } from "@/utils";
 
-export const EthereumIcon: FC<StylingIcon> = ({
-  containerStyle,
-  imageStyle,
-}) => {
+export const UsdtIcon: FC<StylingIcon> = ({ containerStyle, imageStyle }) => {
   return (
     <View style={[styles.iconContainer, containerStyle]}>
       <Image
-        source={require("../../assets/cyptoImgs/eth-logo.png")}
+        source={require("../../assets/cyptoImgs/usdt-logo.png")}
         style={[styles.iconImage, imageStyle]}
         contentFit="cover"
         cachePolicy="disk"
@@ -26,7 +23,7 @@ const styles = StyleSheet.create({
     width: 30, // Adjust size as needed
     height: 30,
     borderRadius: 50 / 2, // Circular shape
-    backgroundColor: "#6B8AFF33", // Optional, in case the image doesn't fill the circle
+    backgroundColor: "#24f07d", // Optional, in case the image doesn't fill the circle
     overflow: "hidden",
     justifyContent: "center",
     alignItems: "center",

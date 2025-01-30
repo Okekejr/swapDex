@@ -4,13 +4,20 @@ import { RPC_URL_ETH_KEY, RPC_URL_POLYGON_KEY } from "@/constants/RpcURL";
 import { Chain } from "viem";
 import { EthereumIcon } from "@/components/icons/ethereumIcon";
 import { USDMATIC } from "@/components/config/Polygon";
+import { ViewStyle } from "react-native";
+import { ImageStyle } from "expo-image";
 
 export type ChainProps = {
-  icon: () => React.JSX.Element;
+  icon: React.FC<StylingIcon>;
   name: string;
   rpcKey: string;
   rpcContract: string;
 };
+
+export interface StylingIcon {
+  containerStyle?: ViewStyle;
+  imageStyle?: ImageStyle;
+}
 
 export const ChainProperties = (chain: Chain | undefined) => {
   if (!chain) return;

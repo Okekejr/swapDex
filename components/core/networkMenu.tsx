@@ -4,6 +4,7 @@ import { useAccount, useChains, useSwitchChain } from "wagmi";
 import CustomText from "../ui/customText";
 import { Ionicons } from "@expo/vector-icons";
 import { ChainProperties } from "@/utils";
+import * as Haptics from "expo-haptics";
 
 export const NetworkMenu = () => {
   const chains = useChains();
@@ -19,10 +20,13 @@ export const NetworkMenu = () => {
   return (
     <View>
       <TouchableOpacity
-        onPress={handlePickerToggle}
+        onPress={() => {
+          Haptics.selectionAsync();
+          handlePickerToggle();
+        }}
         style={styles.pickerButton}
       >
-        {chainProps[0]?.icon?.()}
+        {chainProps[0]?.icon({})}
 
         <Ionicons
           name={isPickerVisible ? "chevron-up" : "chevron-down"}
@@ -42,13 +46,14 @@ export const NetworkMenu = () => {
                 style={styles.pickerItem}
                 onPress={() => {
                   if (chain && chain.id !== network.id) {
+                    Haptics.selectionAsync();
                     switchChain({ chainId: network.id });
                     setIsPickerVisible(false);
                   }
                 }}
                 disabled={chain && chain.id === network.id}
               >
-                {chainProps[0]?.icon?.()}
+                {chainProps[0].icon({})}
 
                 <CustomText style={styles.pickerItemText}>
                   {network.name.charAt(0).toUpperCase() + network.name.slice(1)}
@@ -100,7 +105,7 @@ const styles = StyleSheet.create({
   pickerList: {
     position: "absolute",
     top: 35,
-    right: -5,
+    right: -32,
     borderWidth: 1,
     borderColor: "#24f07d",
     backgroundColor: "#000",

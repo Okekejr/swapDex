@@ -1,14 +1,15 @@
-import React from "react";
-import { View, StyleSheet } from "react-native";
-import { Image } from "expo-image";
+import React, { FC } from "react";
+import { View, StyleSheet, ViewStyle } from "react-native";
+import { Image, ImageStyle } from "expo-image";
 import { blurhash } from "@/constants/random";
+import { StylingIcon } from "@/utils";
 
-export const MaticIcon = () => {
+export const MaticIcon: FC<StylingIcon> = ({ containerStyle, imageStyle }) => {
   return (
-    <View style={styles.iconContainer}>
+    <View style={[styles.iconContainer, containerStyle]}>
       <Image
         source={require("../../assets/cyptoImgs/matic-logo.png")}
-        style={styles.iconImage}
+        style={[styles.iconImage, imageStyle]}
         contentFit="cover"
         cachePolicy="disk"
         placeholder={{ blurhash }}
