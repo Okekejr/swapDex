@@ -2,97 +2,47 @@ import {
   StyleSheet,
   Dimensions,
   View,
-  ActivityIndicator,
   TouchableOpacity,
   Animated,
-  Alert,
+  ScrollView,
 } from "react-native";
-import { useAccount, useDisconnect } from "wagmi";
-import React, { useEffect, useRef, useState } from "react";
+import { useAccount } from "wagmi";
+import React from "react";
 import { Redirect } from "expo-router";
-import Header from "@/components/header/header";
 import CustomText from "@/components/ui/customText";
 import { useBalances } from "@/hooks/useBalances";
-import {
-  ChainProperties,
-  ChainProps,
-  formatedBalance,
-  formatUsdBalance,
-} from "@/utils";
-import { usePriceFeed } from "@/hooks/usePriceFeed";
-import { NetworkMenu } from "@/components/core/networkMenu";
-import { Ionicons } from "@expo/vector-icons";
-import * as Haptics from "expo-haptics";
-import { PriceFeed } from "@/components/core/priceFeed";
-import { EthereumIcon } from "@/components/icons/ethereumIcon";
-import { USDETH, USDTUSDETH } from "@/components/config/Eth";
-import { RPC_URL_ETH_KEY, RPC_URL_POLYGON_KEY } from "@/constants/RpcURL";
-import { USDMATIC, USDTUSDMATIC } from "@/components/config/Polygon";
-import { MaticIcon } from "@/components/icons/maticIcon";
-import { UsdtIcon } from "@/components/icons/usdtIcon";
+import { useHomeFeed } from "@/hooks/useHomeFeed";
+import { TopCardContainer } from "@/components/ui/homeComp/topCardContainer";
+import { LiveFeedContainer } from "@/components/ui/homeComp/liveFeedContainer";
+import { OverviewComp } from "@/components/ui/homeComp/overviewComp";
 
-const { height, width } = Dimensions.get("window");
+const { width } = Dimensions.get("window");
 const SCREEN_PADDING = 12;
 const Tabs = ["Overview", "WatchList"];
 const TAB_WIDTH = (width - SCREEN_PADDING * 2) / Tabs.length;
 
 export default function HomeScreen() {
   const { isConnected, address, chain } = useAccount();
-  const { disconnect } = useDisconnect();
   const { accBalance } = useBalances(address);
-  const [chainProps, setChainProps] = useState<ChainProps[]>([]);
-  const [activeTab, setActiveTab] = useState(0);
-  const indicatorPosition = useRef(new Animated.Value(0)).current;
 
-  // fetching price of eth using price feed hook
-  const { data: priceFeed } = usePriceFeed(
-    chainProps.length > 0 ? chainProps[0].rpcKey : "",
-    chainProps.length > 0 ? chainProps[0].rpcContract : ""
-  );
+  console.log(address)
 
-  useEffect(() => {
-    const chainProps = ChainProperties(chain) || [];
-    setChainProps(chainProps);
-  }, [chain]);
-
-  const isLoadingBalance = !accBalance?.value;
-  const isLoadingPrice = !priceFeed;
-  const formattedBalance =
-    isLoadingBalance || isLoadingPrice
-      ? "Loading..."
-      : formatUsdBalance({
-          balance: formatedBalance(accBalance?.value),
-          priceFeedValue: priceFeed,
-        });
-
-  const handleTabPress = (index: number) => {
-    setActiveTab(index);
-    Haptics.selectionAsync();
-
-    // Animate indicator to the clicked tab
-    Animated.timing(indicatorPosition, {
-      toValue: index * TAB_WIDTH,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
-  };
-
-  const handleSignout = async () => {
-    Alert.alert("Confirm", `You are signing out, Are you sure?`, [
-      { text: "Cancel", style: "cancel" }, // Cancel action
-      {
-        text: "Sign Out",
-        style: "destructive",
-        onPress: async () => {
-          try {
-            disconnect();
-          } catch (error) {
-            Alert.alert("Sign Out Failed", (error as Error).message);
-          }
-        },
-      },
-    ]);
-  };
+  const {
+    handleSignout,
+    handleTabPress,
+    openModal,
+    activeTab,
+    indicatorPosition,
+    modalVisible,
+    chainProps,
+    formattedBalance,
+    isLoadingBalance,
+    isLoadingPrice,
+  } = useHomeFeed({
+    chain: chain,
+    accBalance: accBalance,
+    TAB_WIDTH: TAB_WIDTH,
+  });
 
   if (!isConnected) {
     return <Redirect href="/login" />;
@@ -100,95 +50,21 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.safeArea}>
-      <View style={styles.cardContainer}>
-        <View style={styles.topContainer}>
-          <Header showProfileImage userName="Emmanuel Okeke" image="yes">
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 20,
-              }}
-            >
-              <NetworkMenu />
-              <TouchableOpacity
-                onPress={() => {
-                  Haptics.selectionAsync();
-                  handleSignout();
-                }}
-              >
-                <Ionicons name="log-out-outline" size={30} color="#000" />
-              </TouchableOpacity>
-            </View>
-          </Header>
-          <View style={{ gap: 10 }}>
-            <CustomText style={{ fontSize: 15 }}>
-              Your {chainProps.length > 0 ? chainProps[0].name : "Crypto"}{" "}
-              Balance
-            </CustomText>
-            <View
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                alignItems: "center",
-                gap: 8,
-              }}
-            >
-              <CustomText style={{ fontSize: 45, fontWeight: "bold" }}>
-                {isLoadingBalance || isLoadingPrice ? (
-                  <ActivityIndicator size="small" color="#000" />
-                ) : (
-                  `$${formattedBalance}`
-                )}
-              </CustomText>
+      <TopCardContainer
+        handleSignout={handleSignout}
+        isLoadingBalance={isLoadingBalance}
+        isLoadingPrice={isLoadingPrice}
+        chainProps={chainProps}
+        formattedBalance={formattedBalance}
+        accBalance={accBalance}
+      />
 
-              <View
-                style={{
-                  borderWidth: 1,
-                  borderRadius: 20,
-                  padding: 2,
-                  paddingHorizontal: 4,
-                  backgroundColor: "#c7c7c7",
-                  zIndex: -1,
-                }}
-              >
-                <CustomText>
-                  {formatedBalance(accBalance?.value)}{" "}
-                  {chainProps.length > 0 ? chainProps[0].name : "ETH"}
-                </CustomText>
-              </View>
-            </View>
-          </View>
-        </View>
-      </View>
-      <View style={styles.middleContainer}>
-        {isConnected && (
-          <>
-            <View style={{ display: "flex", flexDirection: "row", gap: 5 }}>
-              {chain?.id === 1 ? (
-                <>
-                  <PriceFeed
-                    name="Eth"
-                    icon={EthereumIcon}
-                    rpcContract={USDETH}
-                    rpcKey={RPC_URL_ETH_KEY}
-                  />
-                </>
-              ) : (
-                <>
-                  <PriceFeed
-                    name="POL"
-                    icon={MaticIcon}
-                    rpcContract={USDMATIC}
-                    rpcKey={RPC_URL_POLYGON_KEY}
-                  />
-                </>
-              )}
-            </View>
-          </>
-        )}
-      </View>
+      <LiveFeedContainer
+        openModal={openModal}
+        modalVisible={modalVisible}
+        isConnected={isConnected}
+        chain={chain}
+      />
 
       {/* Tabs */}
       <View style={styles.tabsContainer}>
@@ -219,6 +95,16 @@ export default function HomeScreen() {
           </TouchableOpacity>
         ))}
       </View>
+
+      {/* Tab Content */}
+      <ScrollView contentContainerStyle={styles.content}>
+        {activeTab === 0 && (
+          <>
+            <CustomText style={{ color: "red" }}>Overview</CustomText>
+            <OverviewComp />
+          </>
+        )}
+      </ScrollView>
     </View>
   );
 }
@@ -232,37 +118,11 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 12,
     paddingTop: 5,
+    gap: 10,
   },
   header: {
     color: "#fff",
     fontSize: 15,
-  },
-  middleContainer: {
-    backgroundColor: "#1A1A1A",
-    borderRadius: 25,
-    position: "relative",
-    zIndex: 3,
-    width: "100%",
-    paddingVertical: 20,
-    paddingHorizontal: 25,
-    marginBottom: 10,
-    gap: 10,
-  },
-  cardContainer: {
-    backgroundColor: "#24f07d",
-    borderRadius: 45,
-    position: "relative",
-    zIndex: 3,
-    width: "100%",
-    height: height / 4.1,
-    marginBottom: 10,
-  },
-  topContainer: {
-    display: "flex",
-    flexDirection: "column",
-    gap: 20,
-    marginTop: 70,
-    paddingHorizontal: 25,
   },
   tabsContainer: {
     flexDirection: "row",
@@ -297,5 +157,9 @@ const styles = StyleSheet.create({
     top: 5,
     left: (TAB_WIDTH * 0.2) / 2,
     zIndex: 1,
+  },
+  content: {
+    padding: 20,
+    paddingBottom: 70,
   },
 });

@@ -90,6 +90,7 @@ const styles = StyleSheet.create({
   pickerButton: {
     flexDirection: "row",
     alignItems: "center",
+    gap: 5
   },
   pickerItem: {
     paddingVertical: 10,
