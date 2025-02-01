@@ -13,7 +13,7 @@ import CustomText from "../customText";
 import { ChainProps, formatedBalance } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
 
-const { height, width } = Dimensions.get("window");
+const { height } = Dimensions.get("window");
 
 interface TopCardContainerT {
   handleSignout: () => Promise<void>;

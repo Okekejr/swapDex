@@ -27,7 +27,7 @@ export const PriceFeed = ({
     <View style={[styles.container, containerStyle]}>
       <View style={styles.innercontainer}>
         {icon({ containerStyle: { width: 40, height: 40 } })}
-        <View style={{ display: "flex", flexDirection: "column", gap: 5 }}>
+        <View style={styles.mainCont}>
           <CustomText style={styles.textFix}>{name}</CustomText>
 
           {subText && (
@@ -75,5 +75,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#fff",
+  },
+  mainCont: {
+    display: "flex",
+    flexDirection: "column",
+    gap: 5,
   },
 });

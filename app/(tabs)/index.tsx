@@ -14,7 +14,7 @@ import { useBalances } from "@/hooks/useBalances";
 import { useHomeFeed } from "@/hooks/useHomeFeed";
 import { TopCardContainer } from "@/components/ui/homeComp/topCardContainer";
 import { LiveFeedContainer } from "@/components/ui/homeComp/liveFeedContainer";
-import { OverviewComp } from "@/components/ui/homeComp/overviewComp";
+import { Overview } from "@/components/ui/homeComp/overview";
 
 const { width } = Dimensions.get("window");
 const SCREEN_PADDING = 12;
@@ -24,8 +24,6 @@ const TAB_WIDTH = (width - SCREEN_PADDING * 2) / Tabs.length;
 export default function HomeScreen() {
   const { isConnected, address, chain } = useAccount();
   const { accBalance } = useBalances(address);
-
-  console.log(address)
 
   const {
     handleSignout,
@@ -98,19 +96,14 @@ export default function HomeScreen() {
 
       {/* Tab Content */}
       <ScrollView contentContainerStyle={styles.content}>
-        {activeTab === 0 && (
-          <>
-            <CustomText style={{ color: "red" }}>Overview</CustomText>
-            <OverviewComp />
-          </>
-        )}
+        {activeTab === 0 && <Overview />}
       </ScrollView>
     </View>
   );
 }
 
-const TAB_CONTAINER_HEIGHT = 50; // Height of the tab container
-const CAPSULE_HEIGHT = 40; // Height of the indicator/capsule
+const TAB_CONTAINER_HEIGHT = 60;
+const CAPSULE_HEIGHT = 40;
 const BORDER_RADIUS = CAPSULE_HEIGHT / 2;
 
 const styles = StyleSheet.create({
@@ -126,9 +119,9 @@ const styles = StyleSheet.create({
   },
   tabsContainer: {
     flexDirection: "row",
-    backgroundColor: "#333", // Lighter gray for the tab bar
+    backgroundColor: "#333",
     borderRadius: BORDER_RADIUS,
-    paddingVertical: 5,
+    paddingVertical: 10,
     height: TAB_CONTAINER_HEIGHT,
     position: "relative",
     overflow: "hidden",
@@ -141,11 +134,11 @@ const styles = StyleSheet.create({
   },
   tabText: {
     fontSize: 16,
-    color: "#bbb", // Inactive tab text color
-    zIndex: 3, // Ensures text stays on top
+    color: "#bbb",
+    zIndex: 3,
   },
   activeTabText: {
-    color: "#fff", // Active tab text color
+    color: "#fff",
     fontWeight: "bold",
   },
   indicator: {
@@ -154,12 +147,12 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: "#000",
     borderRadius: BORDER_RADIUS,
-    top: 5,
+    top: 10,
     left: (TAB_WIDTH * 0.2) / 2,
     zIndex: 1,
   },
   content: {
-    padding: 20,
+    paddingTop: 10,
     paddingBottom: 70,
   },
 });

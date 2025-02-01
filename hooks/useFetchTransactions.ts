@@ -1,4 +1,4 @@
-import { getAlchemyNetwork } from "@/utils/alchemy";
+import { getAlchemyNetwork } from "@/utils";
 import { ALCHEMY_KEY } from "@env";
 import { useQuery } from "@tanstack/react-query";
 import { Alchemy, AssetTransfersCategory } from "alchemy-sdk";
