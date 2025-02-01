@@ -10,15 +10,15 @@ import {
 import CustomText from "../ui/customText";
 import * as Haptics from "expo-haptics";
 import { Ionicons } from "@expo/vector-icons";
-import { getFirstName, getInitials, getTimeOfDay } from "@/utils";
+import { getTimeOfDay, TruncateAddress } from "@/utils";
 import { blurhash } from "@/constants/random";
+import { Address } from "viem";
 
 interface HeaderProps {
   children?: React.ReactNode;
   headerTitle?: string;
   showProfileImage?: boolean;
-  userName?: string;
-  image?: string;
+  address?: Address | undefined;
   textStyles?: StyleProp<TextStyle>;
 }
 
@@ -26,8 +26,7 @@ const Header: React.FC<HeaderProps> = ({
   children,
   headerTitle,
   showProfileImage,
-  userName,
-  image,
+  address,
   textStyles,
 }) => {
   const nameOfIcon = getTimeOfDay();
@@ -43,21 +42,12 @@ const Header: React.FC<HeaderProps> = ({
           {showProfileImage && (
             <View style={styles.contentContainer}>
               <View style={[styles.profileContainer, { borderColor: "#fff" }]}>
-                {image ? (
-                  <Image
-                    source={require("../../assets/images/yo.jpeg")}
-                    style={styles.profileImage}
-                    contentFit="cover"
-                    cachePolicy="disk"
-                    placeholder={{ blurhash }}
-                  />
-                ) : (
-                  <View style={styles.profileFallback}>
-                    <CustomText style={styles.initials}>
-                      {userName ? getInitials(userName) : "?"}
-                    </CustomText>
-                  </View>
-                )}
+                <Image
+                  style={styles.profileImage}
+                  contentFit="cover"
+                  cachePolicy="disk"
+                  placeholder={{ blurhash }}
+                />
               </View>
               <View style={{ display: "flex", flexDirection: "column" }}>
                 <View style={[styles.contentContainer, { gap: 2 }]}>
@@ -74,7 +64,7 @@ const Header: React.FC<HeaderProps> = ({
                 <CustomText
                   style={[styles.initials, { color: "#000", fontSize: 16 }]}
                 >
-                  {userName ? getFirstName(userName) : ""}
+                  {address ? TruncateAddress(4, address) : "?"}
                 </CustomText>
               </View>
             </View>

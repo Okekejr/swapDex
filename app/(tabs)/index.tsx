@@ -1,19 +1,10 @@
-import {
-  StyleSheet,
-  Dimensions,
-  View,
-  TouchableOpacity,
-  Animated,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, Dimensions, View, ScrollView } from "react-native";
 import { useAccount } from "wagmi";
 import React from "react";
 import { Redirect } from "expo-router";
-import CustomText from "@/components/ui/customText";
 import { useBalances } from "@/hooks/useBalances";
 import { useHomeFeed } from "@/hooks/useHomeFeed";
 import { TopCardContainer } from "@/components/ui/homeComp/topCardContainer";
-import { LiveFeedContainer } from "@/components/ui/homeComp/liveFeedContainer";
 import { Overview } from "@/components/ui/homeComp/overview";
 import { TopTokens } from "@/components/ui/homeComp/topTokens";
 
@@ -28,11 +19,6 @@ export default function HomeScreen() {
 
   const {
     handleSignout,
-    handleTabPress,
-    openModal,
-    activeTab,
-    indicatorPosition,
-    modalVisible,
     chainProps,
     formattedBalance,
     isLoadingBalance,
@@ -40,6 +26,9 @@ export default function HomeScreen() {
     TopTokensList,
     isError,
     isLoading,
+    TransactionError,
+    TransactionLoading,
+    Transactions,
   } = useHomeFeed({
     chain: chain,
     accBalance: accBalance,
@@ -59,52 +48,21 @@ export default function HomeScreen() {
         chainProps={chainProps}
         formattedBalance={formattedBalance}
         accBalance={accBalance}
+        address={address}
       />
 
       <ScrollView>
-        {/* <LiveFeedContainer
-        openModal={openModal}
-        modalVisible={modalVisible}
-        isConnected={isConnected}
-        chain={chain}
-      /> */}
-
         <TopTokens
           data={TopTokensList}
           isError={isError}
           isLoading={isLoading}
         />
 
-        {/* Tabs */}
-        {/* <View style={styles.tabsContainer}>
-          <Animated.View
-            style={[
-              styles.indicator,
-              {
-                transform: [{ translateX: indicatorPosition }],
-              },
-            ]}
-          />
-
-          {Tabs.map((tab, index) => (
-            <TouchableOpacity
-              key={index}
-              onPress={() => handleTabPress(index)}
-              style={styles.tab}
-            >
-              <CustomText
-                style={[
-                  styles.tabText,
-                  activeTab === index && styles.activeTabText,
-                ]}
-              >
-                {tab}
-              </CustomText>
-            </TouchableOpacity>
-          ))}
-        </View> */}
-
-        <Overview />
+        <Overview
+          data={Transactions}
+          isError={TransactionError}
+          isLoading={TransactionLoading}
+        />
       </ScrollView>
     </View>
   );
@@ -119,7 +77,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 12,
     paddingTop: 5,
-    gap: 10,
+    gap: 20,
   },
   header: {
     color: "#fff",

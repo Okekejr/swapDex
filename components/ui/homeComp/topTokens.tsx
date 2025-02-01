@@ -9,6 +9,7 @@ import CustomText from "../customText";
 import { TopTokenCard } from "./topTokenCard";
 import { TokensResponse } from "@/types";
 import { FC } from "react";
+import { useRouter } from "expo-router";
 
 interface TopTokens {
   data: TokensResponse | undefined;
@@ -17,6 +18,8 @@ interface TopTokens {
 }
 
 export const TopTokens: FC<TopTokens> = ({ data, isError, isLoading }) => {
+  const router = useRouter();
+
   if (!data || isError) {
     return (
       <View style={styles.Container}>
@@ -38,10 +41,14 @@ export const TopTokens: FC<TopTokens> = ({ data, isError, isLoading }) => {
       <View style={styles.headerContainer}>
         <CustomText style={styles.headerText}>Popular Tokens</CustomText>
 
-        <TouchableOpacity style={styles.linkStyle}>
-          <CustomText style={styles.subText}>View all Tokens</CustomText>
+        <TouchableOpacity
+          style={styles.linkStyle}
+          onPress={() => router.push("/tokens")}
+        >
+          <CustomText style={styles.subText}>See all</CustomText>
         </TouchableOpacity>
       </View>
+      
       <ScrollView horizontal contentContainerStyle={styles.tokenContainer}>
         {data?.data.coins.map((token) => {
           return <TopTokenCard key={token.rank} data={token} />;
@@ -68,6 +75,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    alignContent: "center",
   },
   tokenContainer: {
     flexDirection: "row",
@@ -78,7 +86,6 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "#fff",
-    marginTop: 10,
   },
   subText: {
     color: "#c7c7c7",

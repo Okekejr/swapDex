@@ -1,8 +1,14 @@
 import { Image } from "expo-image";
 import React, { FC } from "react";
-import { StyleSheet, View } from "react-native";
+import {
+  Alert,
+  Linking,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
 import CustomText from "../customText";
-import { blurhash } from "@/constants/random";
+import { AppName, blurhash } from "@/constants/random";
 import { Tokens } from "@/types";
 import { formattedPrice } from "@/utils";
 import { Ionicons } from "@expo/vector-icons";
@@ -11,62 +17,76 @@ const CARD_WIDTH = 200;
 
 interface TopTokenCardT {
   data: Tokens;
+  link?: boolean;
 }
 
-export const TopTokenCard: FC<TopTokenCardT> = ({ data }) => {
-  const { name, symbol, iconUrl, price, change, marketCap } = data;
+export const TopTokenCard: FC<TopTokenCardT> = ({ data, link }) => {
+  const { name, symbol, iconUrl, price, change, coinrankingUrl } = data;
 
   const negativeTrend = parseFloat(change) < 0;
 
+  const handlePress = () => {
+    link &&
+      Alert.alert("Confirm", `Your are leaving ${AppName}`, [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Leave",
+          style: "default",
+          onPress: async () => {
+            try {
+              Linking.openURL(coinrankingUrl);
+            } catch (error) {
+              Alert.alert("Failed", (error as Error).message);
+            }
+          },
+        },
+      ]);
+  };
+
   return (
-    <View style={styles.cardContainer}>
-      <View style={styles.innercontainer}>
-        <View style={styles.topContainer}>
-          <View style={styles.iconContainer}>
-            <Image
-              source={{ uri: iconUrl }}
-              style={styles.iconImage}
-              contentFit="cover"
-              cachePolicy="disk"
-              placeholder={{ blurhash }}
-            />
-          </View>
-
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 5,
-            }}
-          >
-            <CustomText
-              style={[
-                styles.subText,
-                negativeTrend ? { color: "red" } : { color: "green" },
-              ]}
-            >
-              {change}
-            </CustomText>
-
+    <TouchableOpacity onPress={handlePress}>
+      <View style={styles.cardContainer}>
+        <View style={styles.innercontainer}>
+          <View style={styles.topContainer}>
             <View style={styles.iconContainer}>
-              <Ionicons
-                name={negativeTrend ? "trending-down" : "trending-up"}
-                size={20}
-                color={negativeTrend ? "red" : "#24f07d"}
+              <Image
+                source={{ uri: iconUrl }}
+                style={styles.iconImage}
+                contentFit="cover"
+                cachePolicy="disk"
+                placeholder={{ blurhash }}
               />
             </View>
+
+            <View style={styles.changeCont}>
+              <CustomText
+                style={[
+                  styles.subText,
+                  negativeTrend ? { color: "red" } : { color: "green" },
+                ]}
+              >
+                {change}
+              </CustomText>
+
+              <View style={styles.iconContainer}>
+                <Ionicons
+                  name={negativeTrend ? "trending-down" : "trending-up"}
+                  size={20}
+                  color={negativeTrend ? "red" : "#24f07d"}
+                />
+              </View>
+            </View>
+          </View>
+          <View style={styles.mainCont}>
+            <CustomText style={styles.subText}>{symbol}</CustomText>
+            <CustomText style={styles.text}>{name}</CustomText>
+            <CustomText style={styles.headerText}>
+              ${formattedPrice(price)}
+            </CustomText>
           </View>
         </View>
-        <View style={styles.mainCont}>
-          <CustomText style={styles.subText}>{symbol}</CustomText>
-          <CustomText style={styles.text}>{name}</CustomText>
-          <CustomText style={styles.headerText}>
-            ${formattedPrice(price)}
-          </CustomText>
-        </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -122,5 +142,11 @@ const styles = StyleSheet.create({
   },
   subText: {
     color: "#c7c7c7",
+  },
+  changeCont: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
   },
 });

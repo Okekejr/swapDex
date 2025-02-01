@@ -21,6 +21,7 @@ interface TopCardContainerT {
   isLoadingBalance: boolean;
   isLoadingPrice: boolean;
   formattedBalance: string;
+  address: `0x${string}` | undefined;
   accBalance:
     | {
         decimals: number;
@@ -38,19 +39,13 @@ export const TopCardContainer: FC<TopCardContainerT> = ({
   isLoadingPrice,
   formattedBalance,
   accBalance,
+  address,
 }) => {
   return (
     <View style={styles.cardContainer}>
       <View style={styles.topContainer}>
-        <Header showProfileImage userName="Emmanuel Okeke" image="yes">
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 20,
-            }}
-          >
+        <Header showProfileImage address={address}>
+          <View style={styles.innerContainer}>
             <NetworkMenu />
             <TouchableOpacity
               onPress={() => {
@@ -66,14 +61,7 @@ export const TopCardContainer: FC<TopCardContainerT> = ({
           <CustomText style={{ fontSize: 15 }}>
             Your {chainProps.length > 0 ? chainProps[0].name : "Crypto"} Balance
           </CustomText>
-          <View
-            style={{
-              display: "flex",
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
+          <View style={styles.balanceContainer}>
             <CustomText style={{ fontSize: 45, fontWeight: "bold" }}>
               {isLoadingBalance || isLoadingPrice ? (
                 <ActivityIndicator size="small" color="#000" />
@@ -103,6 +91,18 @@ const styles = StyleSheet.create({
     zIndex: 3,
     width: "100%",
     height: height / 4.1,
+  },
+  innerContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 20,
+  },
+  balanceContainer: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
   },
   topContainer: {
     display: "flex",

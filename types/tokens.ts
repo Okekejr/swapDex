@@ -15,6 +15,7 @@ export interface Tokens {
   coinrankingUrl: string;
   btcPrice: string;
   contractAddresses?: (string | null)[] | null;
+  "24hVolume": string;
 }
 
 export interface TokensResponse {

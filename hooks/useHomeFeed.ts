@@ -11,6 +11,7 @@ import {
 import { Chain } from "viem";
 import { useDisconnect } from "wagmi";
 import { useFetchTokens } from "./useFetchTokens";
+import { useFetchTransactions } from "./useFetchTransactions";
 
 interface HomeFeedT {
   chain: Chain | undefined;
@@ -32,6 +33,11 @@ export const useHomeFeed = ({ chain, accBalance, TAB_WIDTH }: HomeFeedT) => {
   const [modalVisible, setModalVisible] = useState(false);
   const { disconnect } = useDisconnect();
   const { data: TopTokensList, isError, isLoading } = useFetchTokens("5");
+  const {
+    data: Transactions,
+    isError: TransactionError,
+    isLoading: TransactionLoading,
+  } = useFetchTransactions();
 
   // fetching price of eth using price feed hook
   const { data: priceFeed } = usePriceFeed(
@@ -54,21 +60,9 @@ export const useHomeFeed = ({ chain, accBalance, TAB_WIDTH }: HomeFeedT) => {
           priceFeedValue: priceFeed,
         });
 
-  const handleTabPress = (index: number) => {
-    setActiveTab(index);
-    Haptics.selectionAsync();
-
-    // Animate indicator to the clicked tab
-    Animated.timing(indicatorPosition, {
-      toValue: index * TAB_WIDTH,
-      duration: 200,
-      useNativeDriver: true,
-    }).start();
-  };
-
   const handleSignout = async () => {
     Alert.alert("Confirm", `You are signing out, Are you sure?`, [
-      { text: "Cancel", style: "cancel" }, // Cancel action
+      { text: "Cancel", style: "cancel" },
       {
         text: "Sign Out",
         style: "destructive",
@@ -100,8 +94,10 @@ export const useHomeFeed = ({ chain, accBalance, TAB_WIDTH }: HomeFeedT) => {
     TopTokensList,
     isError,
     isLoading,
+    TransactionError,
+    TransactionLoading,
+    Transactions,
     openModal,
-    handleTabPress,
     handleSignout,
   };
 };

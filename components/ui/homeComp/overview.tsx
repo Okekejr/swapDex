@@ -1,17 +1,32 @@
 import React, { FC } from "react";
 import CustomText from "../customText";
-import { useFetchTransactions } from "@/hooks/useFetchTransactions";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { TransactionsCard } from "./transactions";
+import { AssetTransfersResult } from "alchemy-sdk";
+import { useRouter } from "expo-router";
 
-export const Overview: FC = () => {
-  const { data, isError, isLoading } = useFetchTransactions();
+interface OverviewT {
+  data: AssetTransfersResult[] | undefined;
+  isError: boolean;
+  isLoading: boolean;
+}
 
+export const Overview: FC<OverviewT> = ({ data, isError, isLoading }) => {
+  const router = useRouter();
   const transList = data?.slice(0, 4);
 
   return (
     <View style={styles.container}>
-      <CustomText style={styles.headerText}>Transaction History</CustomText>
+      <View style={styles.headerContainer}>
+        <CustomText style={styles.headerText}>Transaction History</CustomText>
+
+        <TouchableOpacity
+          style={styles.linkStyle}
+          onPress={() => router.push("/transactions")}
+        >
+          <CustomText style={styles.subText}>See all</CustomText>
+        </TouchableOpacity>
+      </View>
       <View style={styles.transactions}>
         {transList &&
           transList.map((trans) => {
@@ -33,6 +48,13 @@ const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 5,
     gap: 10,
+    marginTop: 20,
+  },
+  headerContainer: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   loadingContainer: {
     flex: 1,
@@ -43,12 +65,18 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "#fff",
-    marginTop: 10,
   },
   transactions: {
     display: "flex",
     flexDirection: "column",
     gap: 5,
     paddingBottom: 70,
+  },
+  subText: {
+    color: "#c7c7c7",
+  },
+  linkStyle: {
+    borderBottomWidth: 1,
+    borderColor: "#c7c7c7",
   },
 });
