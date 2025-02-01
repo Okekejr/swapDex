@@ -7,12 +7,14 @@ import { TransactionsCard } from "./transactions";
 export const Overview: FC = () => {
   const { data, isError, isLoading } = useFetchTransactions();
 
+  const transList = data?.slice(0, 4);
+
   return (
     <View style={styles.container}>
       <CustomText style={styles.headerText}>Transaction History</CustomText>
       <View style={styles.transactions}>
-        {data &&
-          data.map((trans) => {
+        {transList &&
+          transList.map((trans) => {
             return (
               <TransactionsCard
                 key={trans.uniqueId}
@@ -30,7 +32,7 @@ export const Overview: FC = () => {
 const styles = StyleSheet.create({
   container: {
     paddingHorizontal: 5,
-    gap: 10
+    gap: 10,
   },
   loadingContainer: {
     flex: 1,
@@ -41,6 +43,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     color: "#fff",
+    marginTop: 10,
   },
   transactions: {
     display: "flex",

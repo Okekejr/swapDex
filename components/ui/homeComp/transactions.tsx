@@ -64,7 +64,7 @@ export const TransactionsCard: FC<TransactionsCardT> = ({
 
       <View style={styles.mainCont}>
         <CustomText style={[styles.text, { textAlign: "right" }]}>
-          {data.value?.toFixed(1)}
+          {data.value?.toFixed(3)}
         </CustomText>
         <CustomText style={[styles.subText, { textAlign: "right" }]}>
           {data.asset}

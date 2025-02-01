@@ -1,5 +1,5 @@
 import { usePriceFeed } from "@/hooks/usePriceFeed";
-import { ChainProps } from "@/utils";
+import { ChainProps, formattedPrice } from "@/utils";
 import CustomText from "../ui/customText";
 import { View, StyleSheet, ViewStyle } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -37,7 +37,9 @@ export const PriceFeed = ({
       </View>
 
       <View style={styles.modalContainer}>
-        <CustomText style={styles.textFix}>${priceFeed?.toFixed(2)}</CustomText>
+        <CustomText style={styles.textFix}>
+          ${formattedPrice(priceFeed)}
+        </CustomText>
 
         {modal && (
           <Ionicons

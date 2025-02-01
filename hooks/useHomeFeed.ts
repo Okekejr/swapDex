@@ -10,6 +10,7 @@ import {
 } from "@/utils";
 import { Chain } from "viem";
 import { useDisconnect } from "wagmi";
+import { useFetchTokens } from "./useFetchTokens";
 
 interface HomeFeedT {
   chain: Chain | undefined;
@@ -30,6 +31,7 @@ export const useHomeFeed = ({ chain, accBalance, TAB_WIDTH }: HomeFeedT) => {
   const indicatorPosition = useRef(new Animated.Value(0)).current;
   const [modalVisible, setModalVisible] = useState(false);
   const { disconnect } = useDisconnect();
+  const { data: TopTokensList, isError, isLoading } = useFetchTokens("5");
 
   // fetching price of eth using price feed hook
   const { data: priceFeed } = usePriceFeed(
@@ -95,6 +97,9 @@ export const useHomeFeed = ({ chain, accBalance, TAB_WIDTH }: HomeFeedT) => {
     isLoadingBalance,
     isLoadingPrice,
     indicatorPosition,
+    TopTokensList,
+    isError,
+    isLoading,
     openModal,
     handleTabPress,
     handleSignout,

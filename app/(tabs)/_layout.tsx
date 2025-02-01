@@ -6,6 +6,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -31,7 +32,16 @@ export default function TabLayout() {
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="house.fill" color={color} />
+            <Ionicons name="home-outline" size={28} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="tokens"
+        options={{
+          title: "Tokens",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="globe" size={28} color={color} />
           ),
         }}
       />
@@ -40,7 +50,7 @@ export default function TabLayout() {
         options={{
           title: "Explore",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={28} name="paperplane.fill" color={color} />
+            <Ionicons name="paper-plane" size={28} color={color} />
           ),
         }}
       />

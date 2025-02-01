@@ -16,6 +16,26 @@ interface balanceProps {
   priceFeedValue: number | undefined;
 }
 
+const formatter = new Intl.NumberFormat("en-US", {
+  style: "decimal",
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+export const formattedPrice = (
+  priceFeed: number | string | undefined | null
+) => {
+  if (!priceFeed) return "0";
+
+  const numericValue =
+    typeof priceFeed === "string" ? parseFloat(priceFeed) : priceFeed;
+
+  // Handle invalid numeric conversion (NaN case)
+  if (isNaN(numericValue)) return "0";
+
+  return formatter.format(numericValue);
+};
+
 export const formatUsdBalance = ({ balance, priceFeedValue }: balanceProps) => {
   if (!balance || !priceFeedValue) return "0";
 
@@ -23,5 +43,7 @@ export const formatUsdBalance = ({ balance, priceFeedValue }: balanceProps) => {
   const balanceNumber =
     typeof balance === "bigint" ? Number(balance) : parseFloat(balance);
 
-  return (balanceNumber * priceFeedValue).toFixed(2);
+  return formattedPrice(balanceNumber * priceFeedValue);
 };
+
+//format to h

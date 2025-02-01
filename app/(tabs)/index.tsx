@@ -15,6 +15,7 @@ import { useHomeFeed } from "@/hooks/useHomeFeed";
 import { TopCardContainer } from "@/components/ui/homeComp/topCardContainer";
 import { LiveFeedContainer } from "@/components/ui/homeComp/liveFeedContainer";
 import { Overview } from "@/components/ui/homeComp/overview";
+import { TopTokens } from "@/components/ui/homeComp/topTokens";
 
 const { width } = Dimensions.get("window");
 const SCREEN_PADDING = 12;
@@ -36,6 +37,9 @@ export default function HomeScreen() {
     formattedBalance,
     isLoadingBalance,
     isLoadingPrice,
+    TopTokensList,
+    isError,
+    isLoading,
   } = useHomeFeed({
     chain: chain,
     accBalance: accBalance,
@@ -57,46 +61,50 @@ export default function HomeScreen() {
         accBalance={accBalance}
       />
 
-      <LiveFeedContainer
+      <ScrollView>
+        {/* <LiveFeedContainer
         openModal={openModal}
         modalVisible={modalVisible}
         isConnected={isConnected}
         chain={chain}
-      />
+      /> */}
 
-      {/* Tabs */}
-      <View style={styles.tabsContainer}>
-        {/* Animated Bubble Indicator (Behind the Text) */}
-        <Animated.View
-          style={[
-            styles.indicator,
-            {
-              transform: [{ translateX: indicatorPosition }],
-            },
-          ]}
+        <TopTokens
+          data={TopTokensList}
+          isError={isError}
+          isLoading={isLoading}
         />
 
-        {Tabs.map((tab, index) => (
-          <TouchableOpacity
-            key={index}
-            onPress={() => handleTabPress(index)}
-            style={styles.tab}
-          >
-            <CustomText
-              style={[
-                styles.tabText,
-                activeTab === index && styles.activeTabText,
-              ]}
-            >
-              {tab}
-            </CustomText>
-          </TouchableOpacity>
-        ))}
-      </View>
+        {/* Tabs */}
+        {/* <View style={styles.tabsContainer}>
+          <Animated.View
+            style={[
+              styles.indicator,
+              {
+                transform: [{ translateX: indicatorPosition }],
+              },
+            ]}
+          />
 
-      {/* Tab Content */}
-      <ScrollView contentContainerStyle={styles.content}>
-        {activeTab === 0 && <Overview />}
+          {Tabs.map((tab, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => handleTabPress(index)}
+              style={styles.tab}
+            >
+              <CustomText
+                style={[
+                  styles.tabText,
+                  activeTab === index && styles.activeTabText,
+                ]}
+              >
+                {tab}
+              </CustomText>
+            </TouchableOpacity>
+          ))}
+        </View> */}
+
+        <Overview />
       </ScrollView>
     </View>
   );
@@ -120,11 +128,12 @@ const styles = StyleSheet.create({
   tabsContainer: {
     flexDirection: "row",
     backgroundColor: "#333",
-    borderRadius: BORDER_RADIUS,
+    borderRadius: 12,
     paddingVertical: 10,
     height: TAB_CONTAINER_HEIGHT,
     position: "relative",
     overflow: "hidden",
+    marginHorizontal: 5,
   },
   tab: {
     width: TAB_WIDTH,

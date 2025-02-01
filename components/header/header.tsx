@@ -1,6 +1,12 @@
 import React from "react";
 import { Image } from "expo-image";
-import { View, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  StyleProp,
+  TextStyle,
+} from "react-native";
 import CustomText from "../ui/customText";
 import * as Haptics from "expo-haptics";
 import { Ionicons } from "@expo/vector-icons";
@@ -13,6 +19,7 @@ interface HeaderProps {
   showProfileImage?: boolean;
   userName?: string;
   image?: string;
+  textStyles?: StyleProp<TextStyle>;
 }
 
 const Header: React.FC<HeaderProps> = ({
@@ -21,6 +28,7 @@ const Header: React.FC<HeaderProps> = ({
   showProfileImage,
   userName,
   image,
+  textStyles,
 }) => {
   const nameOfIcon = getTimeOfDay();
 
@@ -76,7 +84,7 @@ const Header: React.FC<HeaderProps> = ({
         <View style={styles.childrenContainer}>{children}</View>
       </View>
       {headerTitle && (
-        <CustomText style={[styles.headerTitle, { color: "#000" }]}>
+        <CustomText style={[styles.headerTitle, textStyles]}>
           {headerTitle}
         </CustomText>
       )}
