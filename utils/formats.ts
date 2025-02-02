@@ -46,4 +46,12 @@ export const formatUsdBalance = ({ balance, priceFeedValue }: balanceProps) => {
   return formattedPrice(balanceNumber * priceFeedValue);
 };
 
-//format to h
+// formate timestamp
+export const formatDate = (timestamp: number): string => {
+  const date = new Date(timestamp * 1000);
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "2-digit",
+  });
+};

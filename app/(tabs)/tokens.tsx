@@ -51,17 +51,22 @@ export default function TokenScreen() {
 
   if (!TokensList || isError) {
     return (
-      <View style={styles.container}>
-        <CustomText style={styles.headerText}>...no tokens</CustomText>
-      </View>
+      <SafeAreaView style={styles.container}>
+        <Header headerTitle="Top 100 Tokens" textStyles={{ color: "#fff" }} />
+        <CustomText style={styles.headerText}>
+          ...no Tokens available
+        </CustomText>
+      </SafeAreaView>
     );
   }
 
   if (isLoading) {
     return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="small" color="#24f07d" />
-      </View>
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="small" color="#24f07d" />
+        </View>
+      </SafeAreaView>
     );
   }
 

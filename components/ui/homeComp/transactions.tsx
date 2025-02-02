@@ -1,6 +1,6 @@
 import { AssetTransfersResult } from "alchemy-sdk";
 import { FC } from "react";
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import CustomText from "../customText";
 import { Ionicons } from "@expo/vector-icons";
 import { Image } from "expo-image";
@@ -10,32 +10,15 @@ import { EthereumIcon } from "@/components/icons/ethereumIcon";
 
 interface TransactionsCardT {
   data: AssetTransfersResult | undefined;
-  isLoading: boolean;
-  isError: boolean;
 }
 
-export const TransactionsCard: FC<TransactionsCardT> = ({
-  data,
-  isError,
-  isLoading,
-}) => {
+export const TransactionsCard: FC<TransactionsCardT> = ({ data }) => {
   const { data: logoURl } = useFetchLogo(data?.rawContract.address);
 
-  if (!data || isError) {
-    return (
-      <View style={styles.container}>
-        <CustomText style={styles.headerText}>...no transactions</CustomText>
-      </View>
-    );
+  if (!data) {
+    return;
   }
 
-  if (isLoading) {
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="small" color="#24f07d" />
-      </View>
-    );
-  }
   return (
     <View style={styles.container}>
       <View style={styles.innercontainer}>
@@ -84,11 +67,6 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 10,
     marginVertical: 5,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignContent: "center",
   },
   headerText: {
     fontSize: 18,

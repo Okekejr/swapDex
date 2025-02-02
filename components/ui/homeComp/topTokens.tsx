@@ -20,7 +20,7 @@ interface TopTokens {
 export const TopTokens: FC<TopTokens> = ({ data, isError, isLoading }) => {
   const router = useRouter();
 
-  if (!data || isError) {
+  if (!data || isError || data.data.coins.length < 0) {
     return (
       <View style={styles.Container}>
         <CustomText style={styles.headerText}>...no tokens</CustomText>
@@ -48,7 +48,7 @@ export const TopTokens: FC<TopTokens> = ({ data, isError, isLoading }) => {
           <CustomText style={styles.subText}>See all</CustomText>
         </TouchableOpacity>
       </View>
-      
+
       <ScrollView horizontal contentContainerStyle={styles.tokenContainer}>
         {data?.data.coins.map((token) => {
           return <TopTokenCard key={token.rank} data={token} />;

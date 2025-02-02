@@ -1,23 +1,17 @@
-import { Tabs, useRouter } from "expo-router";
-import React, { useEffect } from "react";
+import { Tabs } from "expo-router";
+import React from "react";
 import { Platform } from "react-native";
 import { HapticTab } from "@/components/HapticTab";
-import { IconSymbol } from "@/components/ui/IconSymbol";
-import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
-import { useColorScheme } from "@/hooks/useColorScheme";
 import { Ionicons } from "@expo/vector-icons";
 
 export default function TabLayout() {
-  const colorScheme = useColorScheme();
-
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? "light"].tint,
+        tabBarActiveTintColor: Colors.dark.text,
         headerShown: false,
         tabBarButton: HapticTab,
-        tabBarBackground: TabBarBackground,
         tabBarStyle: Platform.select({
           ios: {
             // Use a transparent background on iOS to show the blur effect
@@ -46,11 +40,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="swap"
         options={{
-          title: "Explore",
+          title: "Swap",
           tabBarIcon: ({ color }) => (
-            <Ionicons name="paper-plane" size={28} color={color} />
+            <Ionicons name="swap-vertical" size={28} color="#24f07d" />
           ),
         }}
       />
@@ -60,6 +54,15 @@ export default function TabLayout() {
           title: "Transactions",
           tabBarIcon: ({ color }) => (
             <Ionicons name="receipt" size={28} color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="news"
+        options={{
+          title: "News",
+          tabBarIcon: ({ color }) => (
+            <Ionicons name="newspaper" size={28} color={color} />
           ),
         }}
       />

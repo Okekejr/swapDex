@@ -12,14 +12,7 @@ interface CustomTextProps extends TextProps {
 }
 
 const CustomText: FC<CustomTextProps> = ({ style, ...props }) => {
-  return (
-    <Text
-      style={[styles.defaultFont, style]}
-      numberOfLines={1}
-      ellipsizeMode="tail"
-      {...props}
-    />
-  );
+  return <Text style={[styles.defaultFont, style]} {...props} />;
 };
 
 const styles = StyleSheet.create({

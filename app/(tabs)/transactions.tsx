@@ -4,6 +4,7 @@ import { TransactionsCard } from "@/components/ui/homeComp/transactions";
 import { useFetchTransactions } from "@/hooks/useFetchTransactions";
 import { ExplorerUrl } from "@/utils";
 import {
+  ActivityIndicator,
   Linking,
   SafeAreaView,
   ScrollView,
@@ -28,6 +29,22 @@ export default function TransactionsScreen() {
 
   const transactionList = Transactions?.slice(0, 9);
 
+  if (!Transactions || TransactionError || Transactions.length < 0) {
+    return (
+      <View style={styles.container}>
+        <CustomText style={styles.headerText}>...no transactions</CustomText>
+      </View>
+    );
+  }
+
+  if (TransactionLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="small" color="#24f07d" />
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <Header headerTitle="Transactions" textStyles={{ color: "#fff" }} />
@@ -35,14 +52,7 @@ export default function TransactionsScreen() {
       <ScrollView contentContainerStyle={styles.transactions}>
         {transactionList &&
           transactionList.map((trans) => {
-            return (
-              <TransactionsCard
-                key={trans.uniqueId}
-                data={trans}
-                isError={TransactionError}
-                isLoading={TransactionLoading}
-              />
-            );
+            return <TransactionsCard key={trans.uniqueId} data={trans} />;
           })}
 
         <TouchableOpacity style={styles.linkText} onPress={handlePress}>
@@ -58,11 +68,17 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 12,
   },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignContent: "center",
+  },
   transactions: {
     display: "flex",
     flexDirection: "column",
     gap: 5,
     paddingBottom: 70,
+    marginTop: 20,
   },
   linkText: {
     display: "flex",

@@ -79,7 +79,13 @@ export const TopTokenCard: FC<TopTokenCardT> = ({ data, link }) => {
           </View>
           <View style={styles.mainCont}>
             <CustomText style={styles.subText}>{symbol}</CustomText>
-            <CustomText style={styles.text}>{name}</CustomText>
+            <CustomText
+              style={styles.text}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+            >
+              {name}
+            </CustomText>
             <CustomText style={styles.headerText}>
               ${formattedPrice(price)}
             </CustomText>
