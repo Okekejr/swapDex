@@ -1,10 +1,18 @@
 import { useState } from "react";
-import { TouchableOpacity, View, StyleSheet } from "react-native";
+import {
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  Modal,
+  Dimensions,
+} from "react-native";
 import { useAccount, useChains, useSwitchChain } from "wagmi";
 import CustomText from "../ui/customText";
 import { Ionicons } from "@expo/vector-icons";
 import { ChainProperties } from "@/utils";
 import * as Haptics from "expo-haptics";
+
+const { width } = Dimensions.get("window");
 
 export const NetworkMenu = () => {
   const chains = useChains();
@@ -14,16 +22,14 @@ export const NetworkMenu = () => {
   const [isPickerVisible, setIsPickerVisible] = useState(false);
 
   const handlePickerToggle = () => {
+    Haptics.selectionAsync();
     setIsPickerVisible((prev) => !prev);
   };
 
   return (
     <View>
       <TouchableOpacity
-        onPress={() => {
-          Haptics.selectionAsync();
-          handlePickerToggle();
-        }}
+        onPress={handlePickerToggle}
         style={styles.pickerButton}
       >
         {chainProps[0]?.icon({})}
@@ -35,85 +41,112 @@ export const NetworkMenu = () => {
         />
       </TouchableOpacity>
 
-      {isPickerVisible && (
-        <View style={styles.pickerList}>
-          {chains.map((network) => {
-            const chainProps = ChainProperties(network) || [];
+      {/* Modal Component */}
+      <Modal
+        visible={isPickerVisible}
+        transparent={true}
+        animationType="slide"
+        onRequestClose={handlePickerToggle}
+      >
+        <TouchableOpacity
+          style={styles.modalBackdrop}
+          activeOpacity={1}
+          onPress={handlePickerToggle}
+        >
+          <View
+            style={styles.modalContent}
+            onStartShouldSetResponder={() => true}
+          >
+            <View style={styles.feedContainer}>
+              <CustomText style={styles.headerText}>Select Network</CustomText>
 
-            return (
-              <TouchableOpacity
-                key={network.id}
-                style={styles.pickerItem}
-                onPress={() => {
-                  if (chain && chain.id !== network.id) {
-                    Haptics.selectionAsync();
-                    switchChain({ chainId: network.id });
-                    setIsPickerVisible(false);
-                  }
-                }}
-                disabled={chain && chain.id === network.id}
-              >
-                {chainProps[0].icon({})}
+              {chains.map((network) => {
+                const chainProps = ChainProperties(network) || [];
 
-                <CustomText style={styles.pickerItemText}>
-                  {network.name.charAt(0).toUpperCase() + network.name.slice(1)}
-                </CustomText>
+                return (
+                  <TouchableOpacity
+                    key={network.id}
+                    style={styles.pickerItem}
+                    onPress={() => {
+                      if (chain && chain.id !== network.id) {
+                        Haptics.selectionAsync();
+                        switchChain({ chainId: network.id });
+                        setIsPickerVisible(false);
+                      }
+                    }}
+                    disabled={chain && chain.id === network.id}
+                  >
+                    {chainProps[0].icon({})}
 
-                {chain && chain.id === network.id ? (
-                  <Ionicons
-                    style={{ marginHorizontal: 5 }}
-                    name="ellipse"
-                    size={15}
-                    color="#24f07d"
-                  />
-                ) : (
-                  <View style={{ width: 15 }} />
-                )}
-              </TouchableOpacity>
-            );
-          })}
-        </View>
-      )}
+                    <CustomText style={styles.pickerItemText}>
+                      {network.name.charAt(0).toUpperCase() +
+                        network.name.slice(1)}
+                    </CustomText>
+
+                    {chain && chain.id === network.id ? (
+                      <Ionicons
+                        style={{ marginHorizontal: 5 }}
+                        name="checkmark-circle"
+                        size={20}
+                        color="#24f07d"
+                      />
+                    ) : (
+                      <View style={{ width: 15 }} />
+                    )}
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          </View>
+        </TouchableOpacity>
+      </Modal>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  categoryBox: {
-    flexDirection: "row",
-    alignItems: "center",
-    backgroundColor: "#333",
-    padding: 15,
-    borderRadius: 10,
-    marginVertical: 5,
-  },
   pickerButton: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 5
+    gap: 5,
   },
   pickerItem: {
     paddingVertical: 10,
     display: "flex",
     flexDirection: "row",
     alignItems: "center",
-    gap: 7,
+    gap: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#000",
   },
   pickerItemText: {
     color: "#fff",
-    fontSize: 16,
+    fontSize: 20,
+    display: "flex",
+    flex: 1,
   },
-  pickerList: {
-    position: "absolute",
-    top: 35,
-    right: -32,
-    borderWidth: 1,
-    borderColor: "#24f07d",
-    backgroundColor: "#000",
-    borderRadius: 20,
-    paddingVertical: 5,
-    paddingHorizontal: 10,
-    width: 200,
-    zIndex: 2,
+  modalBackdrop: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+  },
+  modalContent: {
+    width: width,
+    height: "auto",
+    padding: 20,
+    backgroundColor: "#151515",
+    borderTopLeftRadius: 25,
+    borderTopRightRadius: 25,
+  },
+  feedContainer: {
+    marginTop: 10,
+    marginBottom: 70,
+    gap: 5,
+  },
+  headerText: {
+    fontSize: 24,
+    color: "#fff",
+    marginBottom: 20,
   },
 });

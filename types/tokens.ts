@@ -23,3 +23,5 @@ export interface TokensResponse {
     coins: Tokens[];
   };
 }
+
+export type BalanceValueType = string | undefined;

@@ -49,20 +49,19 @@ export default function TokenScreen() {
       }
     });
 
-  if (!TokensList || isError) {
+  if (isError) {
     return (
       <SafeAreaView style={styles.container}>
         <Header headerTitle="Top 100 Tokens" textStyles={{ color: "#fff" }} />
-        <CustomText style={styles.headerText}>
-          ...no Tokens available
-        </CustomText>
+        <CustomText style={styles.headerText}>Error loading Tokens</CustomText>
       </SafeAreaView>
     );
   }
 
-  if (isLoading) {
+  if (!TokensList || isLoading) {
     return (
       <SafeAreaView style={styles.container}>
+        <Header headerTitle="Top 100 Tokens" textStyles={{ color: "#fff" }} />
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="small" color="#24f07d" />
         </View>

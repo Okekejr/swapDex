@@ -13,18 +13,19 @@ import {
 export default function NewsScreen() {
   const { data: LatestNews, isError, isLoading } = useFetchNews("10");
 
-  if (!LatestNews || isError) {
+  if (isError) {
     return (
       <SafeAreaView style={styles.container}>
-        <Header headerTitle="Top 100 Tokens" textStyles={{ color: "#fff" }} />
-        <CustomText style={styles.headerText}>...no news available</CustomText>
+        <Header headerTitle="Latest News" textStyles={{ color: "#fff" }} />
+        <CustomText style={styles.headerText}>Error loading News</CustomText>
       </SafeAreaView>
     );
   }
 
-  if (isLoading) {
+  if (!LatestNews || isLoading) {
     return (
       <SafeAreaView style={styles.container}>
+        <Header headerTitle="Latest News" textStyles={{ color: "#fff" }} />
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="small" color="#24f07d" />
         </View>
