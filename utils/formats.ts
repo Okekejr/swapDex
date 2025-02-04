@@ -55,3 +55,6 @@ export const formatDate = (timestamp: number): string => {
     day: "2-digit",
   });
 };
+
+export const originalAmount = (amount: string, decimal: string) =>
+  Number(amount) / 10 ** Number(decimal);

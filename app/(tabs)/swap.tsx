@@ -3,10 +3,10 @@ import { Wallet } from "@/components/core/wallet";
 import CustomText from "@/components/ui/customText";
 import GradientBackground from "@/components/ui/topGradient";
 import { useGetBalance } from "@/hooks/useGetBalance";
+import { usePriceFeed } from "@/hooks/usePriceFeed";
 import { useSupportTokens } from "@/hooks/useSupportTokens";
-import { BalanceValueType, SupportedToken } from "@/types";
-import { formatedBalance } from "@/utils";
-import { useEffect, useState } from "react";
+import { SupportedToken } from "@/types";
+import { useCallback, useEffect, useState } from "react";
 import {
   StyleSheet,
   View,
@@ -20,8 +20,38 @@ export default function SwapScreen() {
   const [toToken, setToToken] = useState<SupportedToken | undefined>();
   const [topInput, setTopInput] = useState<number | null>(null);
   const [toInput, setToInput] = useState<number | null>(null);
-  const [balance, setBalance] = useState<BalanceValueType>();
-  const { accBalance, contractBalance } = useGetBalance({ token: activeToken });
+
+  const { loading: loadingBalance, balance } = useGetBalance({
+    token: activeToken,
+  });
+
+  const { data: priceFeed } = usePriceFeed(
+    activeToken?.rpcUrl ?? "",
+    activeToken?.contractUrl ?? ""
+  );
+
+  const { data: toPriceFeed } = usePriceFeed(
+    toToken?.rpcUrl ?? "",
+    toToken?.contractUrl ?? ""
+  );
+
+  console.log(priceFeed, toPriceFeed);
+
+  const priceTokenTwo = useCallback(() => {
+    if (
+      priceFeed &&
+      priceFeed !== null &&
+      toPriceFeed &&
+      toPriceFeed !== null
+    ) {
+      const ratio = priceFeed / toPriceFeed;
+      const finalOrder =
+        topInput !== null ? parseFloat((topInput * ratio).toFixed(2)) : null;
+      setToInput(finalOrder);
+    } else {
+      setToInput(null);
+    }
+  }, [priceFeed, toPriceFeed, topInput]);
 
   useEffect(() => {
     if (tokenList && tokenList.length > 0) {
@@ -33,12 +63,8 @@ export default function SwapScreen() {
   }, [tokenList]);
 
   useEffect(() => {
-    if (activeToken?.address === "0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee") {
-      setBalance(formatedBalance(accBalance?.value));
-    } else {
-      setBalance(formatedBalance(contractBalance as bigint));
-    }
-  }, [activeToken, balance, accBalance]);
+    priceTokenTwo();
+  }, [priceTokenTwo]);
 
   const handleMaxBtn = () => {
     setTopInput(Number(balance));
@@ -64,6 +90,7 @@ export default function SwapScreen() {
             setTopInput={setTopInput}
             balance={balance}
             handleMaxBtn={handleMaxBtn}
+            loadingBalance={loadingBalance}
           />
         </View>
       </TouchableWithoutFeedback>
@@ -72,16 +99,11 @@ export default function SwapScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    marginHorizontal: 12,
-  },
   topContainer: {
     display: "flex",
     flexDirection: "column",
     gap: 20,
     marginTop: 70,
-    paddingHorizontal: 25,
   },
   headerText: { fontSize: 20, fontWeight: "bold", color: "#000" },
   innerContainer: {
@@ -90,5 +112,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginVertical: 5,
+    paddingHorizontal: 15,
   },
 });

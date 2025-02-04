@@ -60,7 +60,9 @@ export const TokenItems: FC<TokenItemsT> = ({
             placeholder={{ blurhash }}
           />
         </View>
-        <CustomText>{activeToken?.symbol}</CustomText>
+        <CustomText style={{ fontSize: 18, fontWeight: "bold" }}>
+          {activeToken?.symbol}
+        </CustomText>
 
         <Ionicons
           name={isPickerVisible ? "chevron-up" : "chevron-down"}

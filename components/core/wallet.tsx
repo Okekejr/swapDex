@@ -1,8 +1,10 @@
 import { Dispatch, FC, SetStateAction } from "react";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { WalletComp } from "../ui/wallet/walletComp";
 import { Ionicons } from "@expo/vector-icons";
 import { BalanceValueType, SupportedToken } from "@/types";
+import CustomText from "../ui/customText";
+import { useRouter } from "expo-router";
 
 interface WalletT {
   activeToken: SupportedToken | undefined;
@@ -16,6 +18,7 @@ interface WalletT {
   setToInput: React.Dispatch<React.SetStateAction<number | null>>;
   balance: BalanceValueType;
   handleMaxBtn: () => void;
+  loadingBalance: boolean;
 }
 
 export const Wallet: FC<WalletT> = ({
@@ -30,7 +33,30 @@ export const Wallet: FC<WalletT> = ({
   setTopInput,
   balance,
   handleMaxBtn,
+  loadingBalance,
 }) => {
+  const router = useRouter();
+
+  const handleSwapClick = () => {
+    if (!activeToken || !toToken || !topInput || !balance || !toInput) return;
+
+    router.push({
+      pathname: "/quote",
+      params: {
+        fromToken: activeToken.address,
+        toToken: toToken.address,
+        balance: balance,
+        toBalance: toInput,
+        amount: (topInput * 10 ** activeToken.decimals).toString(),
+        decimal: activeToken.decimals,
+        fromLogo: activeToken.logoURI,
+        toLogo: toToken.logoURI,
+        fromSymbol: activeToken.symbol,
+        toSymbol: toToken.symbol,
+      },
+    });
+  };
+
   return (
     <View style={styles.outerContainer}>
       <WalletComp
@@ -43,22 +69,46 @@ export const Wallet: FC<WalletT> = ({
         input={topInput}
         setInput={setTopInput}
         balance={balance}
-        handleMaxBtn={handleMaxBtn}
-        contentStyles={{ borderBottomWidth: 0.5, borderBottomColor: "#fff" }}
+        loadingBalance={loadingBalance}
+        contentStyles={{
+          borderBottomWidth: 0.5,
+          borderBottomColor: "#fff",
+          borderRadius: 60,
+        }}
       />
       <View style={styles.innerIcon}>
-        <Ionicons name="swap-vertical" size={18} color="#000" />
+        <Ionicons name="swap-vertical" size={24} color="#000" />
       </View>
       <WalletComp
-        headText="You Recieve"
+        headText="You Receive"
         activeToken={toToken}
         toToken={activeToken}
         tokenList={tokenList}
         setActiveToken={setToToken}
         input={toInput}
         setInput={setToInput}
-        contentStyles={{ borderTopWidth: 0.5, borderTopColor: "#fff" }}
+        contentStyles={{ borderBottomWidth: 1, borderColor: "#000" }}
       />
+      <View style={styles.maxButton}>
+        <TouchableOpacity onPress={handleMaxBtn}>
+          <CustomText>MAX</CustomText>
+        </TouchableOpacity>
+      </View>
+      <TouchableOpacity
+        style={styles.swapButton}
+        disabled={
+          !balance ||
+          !topInput ||
+          isNaN(Number(balance)) ||
+          Number(balance) < topInput
+        }
+        onPress={handleSwapClick}
+      >
+        <CustomText style={{ fontSize: 18, fontWeight: "bold" }}>
+          Swap
+        </CustomText>
+        <Ionicons name="swap-horizontal" size={16} color="#000" />
+      </TouchableOpacity>
     </View>
   );
 };
@@ -69,16 +119,42 @@ const styles = StyleSheet.create({
     flexDirection: "column",
   },
   innerIcon: {
-    marginVertical: -15,
+    marginVertical: -20,
     marginHorizontal: "auto",
     padding: 5,
-    backgroundColor: "#fff",
-    width: 30,
-    height: 30,
+    backgroundColor: "#FFF",
+    width: 40,
+    height: 40,
     borderRadius: 50 / 2,
     overflow: "hidden",
     justifyContent: "center",
     alignItems: "center",
     zIndex: 2,
+  },
+  maxButton: {
+    marginVertical: -15,
+    marginHorizontal: "auto",
+    padding: 5,
+    backgroundColor: "#fff",
+    borderWidth: 2,
+    borderColor: "#000",
+    width: 80,
+    height: 30,
+    borderRadius: 30 / 2,
+    overflow: "hidden",
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 2,
+  },
+  swapButton: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 90,
+    width: "100%",
+    borderTopWidth: 1,
+    borderColor: "#000",
+    gap: 5,
   },
 });

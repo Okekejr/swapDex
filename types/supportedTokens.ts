@@ -9,4 +9,6 @@ export interface SupportedToken {
   eip2612?: boolean;
   tags?: string[] | null;
   abi?: Abi;
+  contractUrl: string;
+  rpcUrl: string;
 }

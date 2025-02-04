@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Keyboard,
   StyleSheet,
   TextInput,
@@ -23,7 +24,7 @@ interface WalletProps {
   topToken?: boolean;
   input: number | null;
   setInput: React.Dispatch<React.SetStateAction<number | null>>;
-  handleMaxBtn?: () => void;
+  loadingBalance?: boolean;
 }
 
 export const WalletComp: FC<WalletProps> = ({
@@ -37,7 +38,7 @@ export const WalletComp: FC<WalletProps> = ({
   topToken,
   input,
   setInput,
-  handleMaxBtn,
+  loadingBalance,
 }) => {
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
@@ -46,12 +47,23 @@ export const WalletComp: FC<WalletProps> = ({
           <CustomText>{headText}</CustomText>
           <View style={styles.maxContainer}>
             {topToken && (
-              <TouchableOpacity style={styles.maxButton} onPress={handleMaxBtn}>
-                <CustomText>Max</CustomText>
+              <TouchableOpacity
+                style={styles.maxButton}
+                onPress={() => setInput(null)}
+              >
+                <CustomText>Clear</CustomText>
               </TouchableOpacity>
             )}
 
-            {topToken && <CustomText>Balance {balance} ETH</CustomText>}
+            {loadingBalance ? (
+              <ActivityIndicator size="small" color="#000" />
+            ) : (
+              topToken && (
+                <CustomText>
+                  Balance {balance} {activeToken?.symbol}
+                </CustomText>
+              )
+            )}
           </View>
         </View>
         <View style={styles.bottomContainer}>
@@ -68,6 +80,7 @@ export const WalletComp: FC<WalletProps> = ({
             style={styles.inputStyles}
             value={input !== null ? String(input) : ""}
             onChangeText={(text) => setInput(text ? Number(text) : null)}
+            readOnly={!topToken}
           />
         </View>
       </View>
@@ -87,6 +100,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    paddingHorizontal: 15,
   },
   maxContainer: {
     display: "flex",
@@ -107,10 +121,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    paddingHorizontal: 15,
   },
   inputStyles: {
-    fontSize: 30,
-    width: "50%",
+    fontSize: 40,
+    fontWeight: "bold",
+    width: "55%",
     textAlign: "right",
   },
 });
