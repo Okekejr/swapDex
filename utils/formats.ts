@@ -1,3 +1,4 @@
+import { ethers } from "ethers";
 import { formatEther } from "viem";
 import { type UseBalanceReturnType } from "wagmi";
 
@@ -58,3 +59,12 @@ export const formatDate = (timestamp: number): string => {
 
 export const originalAmount = (amount: string, decimal: string) =>
   Number(amount) / 10 ** Number(decimal);
+
+export const toTokenUnits = (amount: number, decimals: number): string => {
+  return (amount * 10 ** decimals).toFixed(3); // Convert to string without decimals
+};
+
+export const convertToWei = (amount: number, decimals: number) => {
+  const amountStr = amount.toString(); // Convert the number to a string
+  return ethers.parseUnits(amountStr, decimals); // Convert to base unit (wei)
+};

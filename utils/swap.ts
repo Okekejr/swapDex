@@ -1,3 +1,4 @@
+import { approval, swapTx } from "@/types";
 import { INCH_KEY } from "@env";
 import { Address } from "viem";
 
@@ -8,7 +9,7 @@ export async function getAllowance(
   tokenAddress: string,
   walletAddress: Address | undefined,
   chainId: number | undefined
-) {
+): Promise<string | undefined> {
   try {
     const response = await fetch(
       `${BASE_URL}/${chainId}/approve/allowance?tokenAddress=${tokenAddress}&walletAddress=${walletAddress}`,
@@ -32,11 +33,11 @@ export async function getAllowance(
 }
 
 // Function to get the approval transaction details
-export async function getApprovalTransaction(
+export const getApprovalTransaction = async (
   tokenAddress: string,
   amount: string,
   chainId: number | undefined
-) {
+): Promise<approval | undefined> => {
   try {
     const response = await fetch(
       `${BASE_URL}/${chainId}/approve/transaction?tokenAddress=${tokenAddress}&amount=${amount}`,
@@ -57,4 +58,40 @@ export async function getApprovalTransaction(
     console.error(error);
     throw new Error("Approval transaction fetch failed");
   }
-}
+};
+
+export const getSwapTransaction = async ({
+  chainId,
+  fromToken,
+  toToken,
+  amount,
+  address,
+  slippage = "1",
+}: {
+  chainId: number | undefined;
+  fromToken: string;
+  toToken: string;
+  amount: string;
+  address: Address | undefined;
+  slippage: string;
+}): Promise<swapTx | undefined> => {
+  const url = `${BASE_URL}/${chainId}/swap?src=${fromToken}&dst=${toToken}&amount=${amount}&from=${address}&origin=${address}&slippage=${slippage}`;
+  console.log("Fetching swap transaction from:", url);
+
+  try {
+    const response = await fetch(url, {
+      headers: {
+        Authorization: `Bearer ${INCH_KEY}`,
+      },
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.text(); // Log error response body
+      console.error("Error response from API:", errorBody);
+    }
+
+    return response.json();
+  } catch (error) {
+    console.error("Error fetching swap transaction:", error);
+  }
+};

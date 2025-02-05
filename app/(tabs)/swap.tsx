@@ -12,6 +12,8 @@ import {
   View,
   Keyboard,
   TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 
 export default function SwapScreen() {
@@ -71,30 +73,35 @@ export default function SwapScreen() {
   };
 
   return (
-    <GradientBackground>
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.topContainer}>
-          <View style={styles.innerContainer}>
-            <CustomText style={styles.headerText}>Swap</CustomText>
-            <NetworkMenu />
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : undefined}
+      style={{ flex: 1 }}
+    >
+      <TouchableWithoutFeedback onPress={Keyboard.dismiss} >
+        <GradientBackground>
+          <View style={styles.topContainer}>
+            <View style={styles.innerContainer}>
+              <CustomText style={styles.headerText}>Swap</CustomText>
+              <NetworkMenu />
+            </View>
+            <Wallet
+              activeToken={activeToken}
+              toToken={toToken}
+              tokenList={tokenList}
+              setActiveToken={setActiveToken}
+              setToToken={setToToken}
+              topInput={topInput}
+              toInput={toInput}
+              setToInput={setToInput}
+              setTopInput={setTopInput}
+              balance={balance}
+              handleMaxBtn={handleMaxBtn}
+              loadingBalance={loadingBalance}
+            />
           </View>
-          <Wallet
-            activeToken={activeToken}
-            toToken={toToken}
-            tokenList={tokenList}
-            setActiveToken={setActiveToken}
-            setToToken={setToToken}
-            topInput={topInput}
-            toInput={toInput}
-            setToInput={setToInput}
-            setTopInput={setTopInput}
-            balance={balance}
-            handleMaxBtn={handleMaxBtn}
-            loadingBalance={loadingBalance}
-          />
-        </View>
+        </GradientBackground>
       </TouchableWithoutFeedback>
-    </GradientBackground>
+    </KeyboardAvoidingView>
   );
 }
 

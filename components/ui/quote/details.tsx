@@ -1,17 +1,28 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, Linking, TouchableOpacity } from "react-native";
 import CustomText from "../customText";
 import { FC } from "react";
 
 interface Details {
   leftText: string;
   rightText: string;
+  url?: string;
 }
 
-export const Details: FC<Details> = ({ leftText, rightText }) => {
+export const Details: FC<Details> = ({ leftText, rightText, url }) => {
   return (
     <View style={styles.container}>
       <CustomText style={styles.leftText}>{leftText}</CustomText>
-      <CustomText style={styles.rightText}>{rightText}</CustomText>
+
+      {url ? (
+        <TouchableOpacity
+          style={styles.linkStyle}
+          onPress={() => Linking.openURL(url)}
+        >
+          <CustomText style={styles.rightText}>{rightText}</CustomText>
+        </TouchableOpacity>
+      ) : (
+        <CustomText style={styles.rightText}>{rightText}</CustomText>
+      )}
     </View>
   );
 };
@@ -32,5 +43,9 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
     color: "#fff",
+  },
+  linkStyle: {
+    borderBottomWidth: 1,
+    borderColor: "#c7c7c7",
   },
 });

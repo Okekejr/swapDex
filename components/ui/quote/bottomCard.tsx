@@ -2,6 +2,7 @@ import {
   ActivityIndicator,
   StyleSheet,
   Text,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -17,13 +18,19 @@ interface bottomCardT {
   isLoading: boolean;
   error: any;
   refetch: () => Promise<QueryObserverResult<quote, Error>>;
+  setSlippage: React.Dispatch<React.SetStateAction<number>>;
+  slippage: number;
+  swapApiError?: any;
 }
 
 export const QuoteBottomCard: FC<bottomCardT> = ({
   data,
   isLoading,
   error,
+  slippage,
+  swapApiError,
   refetch,
+  setSlippage,
 }) => {
   if (!data) return;
 
@@ -54,6 +61,13 @@ export const QuoteBottomCard: FC<bottomCardT> = ({
   const estimatedReceive = Number(dstAmount) / 10 ** dstToken.decimals;
   const finalEstimate = `${estimatedReceive.toFixed(3)} ${dstToken.symbol}`;
 
+  const handleSlippageChange = (text: string) => {
+    let value = Number(text);
+    if (isNaN(value)) value = 1;
+    value = Math.max(0, Math.min(50, value));
+    setSlippage(value);
+  };
+
   return (
     <View style={styles.outerContainer}>
       <View style={styles.innerContainer}>
@@ -77,6 +91,16 @@ export const QuoteBottomCard: FC<bottomCardT> = ({
         <Details leftText="Gas Estimated" rightText={String(data.gas)} />
       </View>
 
+      <View style={styles.slippageContainer}>
+        <Text style={styles.label}>Slippage (%)</Text>
+        <TextInput
+          style={styles.input}
+          keyboardType="numeric"
+          value={slippage.toString()}
+          onChangeText={handleSlippageChange} // Default to 1 if input is invalid
+        />
+      </View>
+
       <View
         style={{ borderWidth: 0.3, borderColor: "#c7c7c7", marginVertical: 30 }}
       />
@@ -89,6 +113,12 @@ export const QuoteBottomCard: FC<bottomCardT> = ({
         </Text>
         .
       </CustomText>
+
+      {swapApiError && (
+        <CustomText style={[styles.subText, { color: "red" }]}>
+          {swapApiError}
+        </CustomText>
+      )}
     </View>
   );
 };
@@ -125,5 +155,25 @@ const styles = StyleSheet.create({
     paddingVertical: 5,
     backgroundColor: "#24f07d",
     borderRadius: 18,
+  },
+  slippageContainer: {
+    marginVertical: 10,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  label: {
+    color: "#fff",
+    fontSize: 16,
+    marginRight: 10,
+  },
+  input: {
+    backgroundColor: "#222",
+    color: "#fff",
+    borderRadius: 8,
+    padding: 10,
+    width: 80,
+    textAlign: "center",
+    borderWidth: 1,
+    borderColor: "#24f07d",
   },
 });

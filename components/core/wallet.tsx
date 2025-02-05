@@ -1,10 +1,17 @@
-import { Dispatch, FC, SetStateAction } from "react";
+import React, {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
+  useState,
+} from "react";
 import { StyleSheet, TouchableOpacity, View } from "react-native";
 import { WalletComp } from "../ui/wallet/walletComp";
 import { Ionicons } from "@expo/vector-icons";
 import { BalanceValueType, SupportedToken } from "@/types";
 import CustomText from "../ui/customText";
 import { useRouter } from "expo-router";
+import { convertToWei } from "@/utils";
 
 interface WalletT {
   activeToken: SupportedToken | undefined;
@@ -36,9 +43,12 @@ export const Wallet: FC<WalletT> = ({
   loadingBalance,
 }) => {
   const router = useRouter();
+  const [error, setError] = useState(false);
 
   const handleSwapClick = () => {
     if (!activeToken || !toToken || !topInput || !balance || !toInput) return;
+
+    const amount = convertToWei(topInput, activeToken.decimals);
 
     router.push({
       pathname: "/quote",
@@ -47,7 +57,7 @@ export const Wallet: FC<WalletT> = ({
         toToken: toToken.address,
         balance: balance,
         toBalance: toInput,
-        amount: (topInput * 10 ** activeToken.decimals).toString(),
+        amount: String(amount),
         decimal: activeToken.decimals,
         fromLogo: activeToken.logoURI,
         toLogo: toToken.logoURI,
@@ -56,6 +66,20 @@ export const Wallet: FC<WalletT> = ({
       },
     });
   };
+
+  const disableSwap =
+    !balance ||
+    !topInput ||
+    isNaN(Number(balance)) ||
+    Number(balance) <= topInput;
+
+  useEffect(() => {
+    if (disableSwap) {
+      setError(true);
+    } else {
+      setError(false);
+    }
+  }, [disableSwap]);
 
   return (
     <View style={styles.outerContainer}>
@@ -96,18 +120,23 @@ export const Wallet: FC<WalletT> = ({
       </View>
       <TouchableOpacity
         style={styles.swapButton}
-        disabled={
-          !balance ||
-          !topInput ||
-          isNaN(Number(balance)) ||
-          Number(balance) < topInput
-        }
+        disabled={disableSwap}
         onPress={handleSwapClick}
       >
-        <CustomText style={{ fontSize: 18, fontWeight: "bold" }}>
-          Swap
-        </CustomText>
-        <Ionicons name="swap-horizontal" size={16} color="#000" />
+        {error ? (
+          <>
+            <CustomText style={{ fontSize: 18, fontWeight: "bold" }}>
+              Insufficient balance
+            </CustomText>
+          </>
+        ) : (
+          <>
+            <CustomText style={{ fontSize: 18, fontWeight: "bold" }}>
+              Swap
+            </CustomText>
+            <Ionicons name="swap-horizontal" size={16} color="#000" />
+          </>
+        )}
       </TouchableOpacity>
     </View>
   );
