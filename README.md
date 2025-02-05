@@ -1,50 +1,76 @@
-# Welcome to your Expo app 👋
+# SwapDex App
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+## Overview
 
-## Get started
+SwapDex is a decentralized mobile application built using React Native and web3 libraries. The app enables users to swap cryptocurrencies across different networks with a seamless and efficient onboarding process. It also allows users to:
 
-1. Install dependencies
+- View transaction history
+- Check balances
+- See the top 100 tokens
+- Read the latest crypto news
 
-   ```bash
-   npm install
-   ```
+The swap functionality is powered by **1inch API** and **Chainlink price feeds**, while **Alchemy** is used as the RPC provider.
 
-2. Start the app
+![Screens](https://github.com/user-attachments/assets/798e819a-8171-429f-a296-3062d3102459)
 
-   ```bash
-    npx expo start
-   ```
+---
 
-In the output, you'll find options to open the app in a
+## Features
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### 1. Onboarding Process
+- Wallet connection via **Reown**.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### 2. Swap Interface
+- Users can select tokens to swap.
+- Price feeds fetched via **Chainlink**.
+- Allowance checking before initiating swaps.
+- Users can edit **slippage settings**.
+- Handles **slippage errors** and **transaction failures**.
 
-## Get a fresh project
+### 3. Transaction Handling
+- Uses **ethers.js** for transaction formatting.
+- Converts token amounts based on **decimals** (e.g., **18 for ETH**, varies for ERC20 tokens).
+- Handles errors like **exceeding API rate limits** and **incorrect amount conversions**.
 
-When you're ready, run:
+### 4. UI Components
+- **Top UI**: Displays ETH/Polygon balance and USD equivalent.
+- **Network switcher**: Toggle between ETH and Polygon.
+- **Tokens Screen**: View **top 100 tokens**.
+- **Latest Transactions Screen**: View **transaction history**.
+- **News Screen**: Displays **latest crypto news**.
+- **Transaction Hash Screen**:
+  - Displays transaction confirmation.
+  - Allows users to **click and view transactions** on **Etherscan/Polygonscan**.
 
-```bash
-npm run reset-project
-```
+---
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+## Technologies Used
 
-## Learn more
+- [**Expo React Native**](https://docs.expo.dev/guides/typescript/)
+- [**WAGMI, Viem & ethers.js**](https://wagmi.sh) for onchain interactions
+- [**Alchemy RPC Provider & Alchemy SDK**](https://www.alchemy.com)
+- [**1inch API**](https://portal.1inch.dev/documentation/apis/swap/classic-swap/introduction) for swapping
+- **React Query** (for caching and data fetching)
+- [**Chainlink API**](https://docs.chain.link/data-feeds/price-feeds/addresses?network=ethereum&page=1&search=) for price feeds
+- [**Cryptocompare API**](https://developers.cryptocompare.com/documentation/data-api/news_v1_article_list) for news
+- [**Coinranking API**](https://developers.coinranking.com/api/documentation) for the top token list
+- [**Reown**](https://docs.reown.com/appkit/react-native/core/installation) for wallet integration
+- **Custom Hooks** for modular and reusable code
 
-To learn more about developing your project with Expo, look at the following resources:
+---
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+## Key Issues Addressed
 
-## Join the community
+### 1. Handling API Rate Limits
+- Implemented **refetch** and increased **request interval** to prevent exceeding **1inch API limits**.
+- Added **custom slippage settings** for better user control.
 
-Join our community of developers creating universal apps.
+### 2. Error Handling & Debugging
+- Displaying **error messages in the UI** instead of console logs.
+- Handling **high slippage errors**, **invalid swaps**, and **failed API requests**.
+- Improved **UI/UX feedback** for failed swaps.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+---
+
+🚀 **SwapDex** is designed to offer a **seamless, decentralized** swapping experience with **reliable price feeds**, **secure wallet connections**, and a **smooth UI**.  
+Happy swapping! 🦄💰
