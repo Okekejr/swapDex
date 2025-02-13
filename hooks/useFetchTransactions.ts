@@ -1,5 +1,4 @@
 import { getAlchemyNetwork } from "@/utils";
-import { ALCHEMY_KEY } from "@env";
 import { useQuery } from "@tanstack/react-query";
 import { Alchemy, AssetTransfersCategory } from "alchemy-sdk";
 import { useAccount } from "wagmi";
@@ -9,7 +8,7 @@ export const useFetchTransactions = () => {
   const network = getAlchemyNetwork(chainId);
 
   const alchemyConfig = {
-    apiKey: ALCHEMY_KEY,
+    apiKey: process.env.EXPO_PUBLIC_ALCHEMY_KEY,
     network: network,
   };
 

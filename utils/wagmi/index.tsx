@@ -1,10 +1,9 @@
 import "@walletconnect/react-native-compat";
 import { mainnet, polygon } from "@wagmi/core/chains";
 import { defaultWagmiConfig } from "@reown/appkit-wagmi-react-native";
-import { REOWN_ID } from "@env";
 
 // 1. Get projectId at https://cloud.reown.com
-export const projectId = REOWN_ID;
+export const projectId = process.env.EXPO_PUBLIC_REOWN_ID || "";
 
 // 2. Create config
 const metadata = {

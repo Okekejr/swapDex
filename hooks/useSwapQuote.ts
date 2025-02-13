@@ -1,9 +1,8 @@
 import { quote } from "@/types";
-import { INCH_KEY } from "@env";
 import { useQuery } from "@tanstack/react-query";
 import { useAccount } from "wagmi";
 
-const API_KEY = INCH_KEY;
+const API_KEY = process.env.EXPO_PUBLIC_INCH_KEY;
 const BASE_URL = "https://api.1inch.dev/swap/v6.0";
 
 interface SwapQuoteProps {

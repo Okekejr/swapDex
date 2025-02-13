@@ -1,5 +1,4 @@
 import { News } from "@/types";
-import { CCDATA_KEY } from "@env";
 import { useQuery } from "@tanstack/react-query";
 
 export const useFetchNews = (limit: string) => {
@@ -10,7 +9,7 @@ export const useFetchNews = (limit: string) => {
       `${baseUrl}/news/v1/article/list?lang=EN&limit=${limit}`,
       {
         headers: {
-          "x-access-token": CCDATA_KEY || "",
+          "x-access-token": process.env.EXPO_PUBLIC_CCDATA_KEY || "",
         },
       }
     );

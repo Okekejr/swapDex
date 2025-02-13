@@ -1,5 +1,4 @@
 import { getAlchemyNetwork } from "@/utils";
-import { ALCHEMY_KEY } from "@env";
 import { useQuery } from "@tanstack/react-query";
 import { Alchemy, AssetTransfersResult } from "alchemy-sdk";
 import { useAccount } from "wagmi";
@@ -13,7 +12,7 @@ export const useFetchLogo = (Address: ContractAddress | null | undefined) => {
   const network = getAlchemyNetwork(chainId);
 
   const alchemyConfig = {
-    apiKey: ALCHEMY_KEY,
+    apiKey: process.env.EXPO_PUBLIC_ALCHEMY_KEY,
     network: network,
   };
 
@@ -31,7 +30,7 @@ export const useFetchLogo = (Address: ContractAddress | null | undefined) => {
     queryKey: ["assetLogos", Address],
     queryFn: fetchLogos,
     enabled: !!Address,
-    staleTime: 3600000, 
+    staleTime: 3600000,
     refetchOnWindowFocus: false,
   });
 };

@@ -1,5 +1,4 @@
 import { approval, swapTx } from "@/types";
-import { INCH_KEY } from "@env";
 import { Address } from "viem";
 
 const BASE_URL = "https://api.1inch.dev/swap/v6.0";
@@ -15,7 +14,7 @@ export async function getAllowance(
       `${BASE_URL}/${chainId}/approve/allowance?tokenAddress=${tokenAddress}&walletAddress=${walletAddress}`,
       {
         headers: {
-          Authorization: `Bearer ${INCH_KEY}`,
+          Authorization: `Bearer ${process.env.EXPO_PUBLIC_INCH_KEY}`,
         },
       }
     );
@@ -43,7 +42,7 @@ export const getApprovalTransaction = async (
       `${BASE_URL}/${chainId}/approve/transaction?tokenAddress=${tokenAddress}&amount=${amount}`,
       {
         headers: {
-          Authorization: `Bearer ${INCH_KEY}`,
+          Authorization: `Bearer ${process.env.EXPO_PUBLIC_INCH_KEY}`,
         },
       }
     );
@@ -81,7 +80,7 @@ export const getSwapTransaction = async ({
   try {
     const response = await fetch(url, {
       headers: {
-        Authorization: `Bearer ${INCH_KEY}`,
+        Authorization: `Bearer ${process.env.EXPO_PUBLIC_INCH_KEY}`,
       },
     });
 

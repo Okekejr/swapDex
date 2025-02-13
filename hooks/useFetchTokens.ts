@@ -1,5 +1,4 @@
 import { TokensResponse } from "@/types";
-import { COINRANKING_KEY } from "@env";
 import { useQuery } from "@tanstack/react-query";
 
 export const useFetchTokens = (limit: string) => {
@@ -8,7 +7,7 @@ export const useFetchTokens = (limit: string) => {
   const fetchCoins = async (): Promise<TokensResponse> => {
     const response = await fetch(`${CoinRankingURL}?limit=${limit}`, {
       headers: {
-        "x-access-token": COINRANKING_KEY || "",
+        "x-access-token": process.env.EXPO_PUBLIC_COINRANKING_KEY || "",
       },
     });
 
